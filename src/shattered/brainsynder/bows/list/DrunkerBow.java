@@ -1,5 +1,6 @@
 package shattered.brainsynder.bows.list;
 
+import org.bukkit.Color;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -11,6 +12,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import shattered.brainsynder.bows.Bow;
 import simple.brainsynder.api.ItemMaker;
+import simple.brainsynder.api.ParticleMaker;
+import simple.brainsynder.sound.SoundMaker;
 
 import java.util.Collection;
 
@@ -34,6 +37,15 @@ public class DrunkerBow extends Bow {
                 Player player = (Player)entity;
                 if (player.getGameMode() == GameMode.SPECTATOR) return;
                 if (player.hasPotionEffect(PotionEffectType.CONFUSION)) return;
+                SoundMaker.ENTITY_GENERIC_DRINK.playSound(location, 1.0f, 0.5f);
+
+                ParticleMaker eggPop = new ParticleMaker(ParticleMaker.Particle.ITEM_CRACK, 30, 1.5);
+                eggPop.setData(Material.EGG);
+                eggPop.sendToLocation(location);
+
+                ParticleMaker color = new ParticleMaker(ParticleMaker.Particle.SPELL_MOB, 15, Color.LIME);
+                color.sendToLocation(location);
+
                 player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 120, 2));
             }
         });
