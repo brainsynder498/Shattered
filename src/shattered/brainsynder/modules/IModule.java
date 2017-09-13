@@ -18,7 +18,7 @@ public abstract class IModule {
         return shattered;
     }
 
-    protected String getName() {
+    String getName() {
         return name;
     }
 }

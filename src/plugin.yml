@@ -1,0 +1,7 @@
+name: ShatteredPVP
+main: shattered.brainsynder.Shattered
+version: 0.1
+author: brainsynder
+commands:
+  shattered:
+    description: Main ShatteredPVP command.
