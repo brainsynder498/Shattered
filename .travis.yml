@@ -1,3 +1,5 @@
 language: java
-java: 
-  - "stable"
+install: ant deps
+jdk:
+  - oraclejdk8
+sudo: false
