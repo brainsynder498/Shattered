@@ -2,6 +2,7 @@ name: ShatteredPVP
 main: shattered.brainsynder.Shattered
 version: 0.1
 author: brainsynder
+depends: [SimpleAPI]
 commands:
   shattered:
     description: Main ShatteredPVP command.
