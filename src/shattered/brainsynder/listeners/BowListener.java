@@ -67,6 +67,11 @@ public class BowListener extends IModule implements Listener {
             arrow.remove();
             return;
         }
+        if (arrow.hasMetadata("INSTA-KILL")) {
+            if (e.getHitEntity() != null) {
+                e.getHitEntity();
+            }
+        }
         if (!bowCache.hasKey(arrow.getUniqueId().toString())) return;
         Bow bow = bowCache.get(arrow.getUniqueId().toString());
 
