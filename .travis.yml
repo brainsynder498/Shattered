@@ -1,4 +1,7 @@
 language: java
+java: 
+  - 1.8
+  - "stable"
 before_install:
-  - wget libs/SimpleAPI.jar
-  - wget libs/spigot-1.12.1-R0.1-SNAPSHOT-b1378.jar
+  - install libs/SimpleAPI.jar
+  - install libs/spigot-1.12.1-R0.1-SNAPSHOT-b1378.jar
