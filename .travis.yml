@@ -1,1 +1,4 @@
 language: java
+before_install:
+  - libs/SimpleAPI.jar
+  - libs/spigot-1.12.1-R0.1-SNAPSHOT-b1378.jar
