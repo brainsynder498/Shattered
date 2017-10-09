@@ -1,7 +1,6 @@
 package shattered.brainsynder.bows;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Arrow;
 import org.bukkit.inventory.ItemStack;
 import shattered.brainsynder.Shattered;
@@ -21,8 +20,11 @@ public abstract class Bow {
     public void whileInAir(Arrow arrow){}
 
     public int getMaxUses(){
-        int max = Material.BOW.getMaxDurability();
-        return 383;
+        return (bowUses() - 2);
+    }
+
+    protected int bowUses () {
+        return 385;
     }
 
     protected Shattered getShattered () {

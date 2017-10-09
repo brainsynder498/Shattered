@@ -2,9 +2,7 @@ package shattered.brainsynder.listeners;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Arrow;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.HandlerList;
-import org.bukkit.event.Listener;
+import org.bukkit.event.*;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -14,9 +12,10 @@ import shattered.brainsynder.bows.BowManager;
 import shattered.brainsynder.cache.AbstractCacheView;
 import shattered.brainsynder.cache.CacheView;
 import shattered.brainsynder.modules.IModule;
+import shattered.brainsynder.modules.list.GlassModule;
 
 public class BowListener extends IModule implements Listener {
-    private CacheView<String, Bow> bowCache = null;
+    public CacheView<String, Bow> bowCache = null;
 
     public BowListener(Shattered shattered) {
         super(shattered, "BowListener");
@@ -31,6 +30,7 @@ public class BowListener extends IModule implements Listener {
     @Override
     public void unLoad() {
         HandlerList.unregisterAll(this);
+        bowCache = null;
     }
 
     @EventHandler
@@ -41,6 +41,7 @@ public class BowListener extends IModule implements Listener {
             if (!(e.getProjectile() instanceof Arrow)) return;
             Arrow arrow = (Arrow) e.getProjectile();
             if (arrow == null) return;
+
             bowCache.inject(arrow.getUniqueId().toString(), bow);
             new BukkitRunnable() {
                 @Override
@@ -63,10 +64,6 @@ public class BowListener extends IModule implements Listener {
     public void onHit(ProjectileHitEvent e) {
         if (!(e.getEntity() instanceof Arrow)) return;
         Arrow arrow = (Arrow) e.getEntity();
-        if (arrow.hasMetadata("REMOVE_ME")) {
-            arrow.remove();
-            return;
-        }
         if (arrow.hasMetadata("INSTA-KILL")) {
             if (e.getHitEntity() != null) {
                 e.getHitEntity();
@@ -75,8 +72,12 @@ public class BowListener extends IModule implements Listener {
         if (!bowCache.hasKey(arrow.getUniqueId().toString())) return;
         Bow bow = bowCache.get(arrow.getUniqueId().toString());
 
-        if (e.getHitBlock() != null) bow.onHit(e.getHitBlock().getLocation());
-        if (e.getHitEntity() != null) bow.onHit(e.getHitEntity().getLocation());
+        if (e.getHitBlock() != null) {
+            if (bow != null) bow.onHit(e.getHitBlock().getLocation());
+            GlassModule glassModule = getShattered().getModuleManager().getModule("GlassModule");
+            glassModule.onArrowLand(e.getHitBlock());
+        }
+        if (bow != null) if (e.getHitEntity() != null) bow.onHit(e.getHitEntity().getLocation());
         arrow.remove();
     }
 }

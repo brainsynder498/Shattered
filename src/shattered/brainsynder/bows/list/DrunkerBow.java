@@ -1,9 +1,6 @@
 package shattered.brainsynder.bows.list;
 
-import org.bukkit.Color;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -25,11 +22,13 @@ public class DrunkerBow extends Bow {
 
     @Override
     public ItemStack getItem() {
-        ItemMaker maker = new ItemMaker(Material.BOW, (byte) getMaxUses());
+        ItemMaker maker = new ItemMaker(Material.BOW);
         maker.setName("Drunker Bow");
         maker.addLoreLine("Intoxicates players near were it lands (nausea).");
         maker.enchant(Enchantment.ARROW_INFINITE, 1);
-        return maker.create();
+        ItemStack stack = maker.create();
+        stack.setDurability((short) getMaxUses());
+        return stack;
     }
 
     @Override

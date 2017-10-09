@@ -8,7 +8,7 @@ import simple.brainsynder.wrappers.MaterialWrapper;
 public class BlockSave {
     private StorageTagCompound compound = null;
 
-    public BlockSave(Block block) {
+    BlockSave(Block block) {
         compound = new StorageTagCompound();
         compound.setString("type", block.getType().name());
         compound.setByte("data", block.getState().getRawData());
@@ -16,7 +16,7 @@ public class BlockSave {
         compound.setString("location", location.toDataString());
     }
 
-    public void placeOriginal() {
+    void placeOriginal() {
         MaterialWrapper wrapper = MaterialWrapper.fromName(compound.getString("type"));
         byte data = compound.getByte("data");
         BlockLocation location = BlockLocation.fromString(compound.getString("location"));

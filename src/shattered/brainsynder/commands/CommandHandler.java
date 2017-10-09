@@ -2,6 +2,7 @@ package shattered.brainsynder.commands;
 
 import shattered.brainsynder.Shattered;
 import shattered.brainsynder.commands.list.Command_Bows;
+import shattered.brainsynder.commands.list.Command_Reset;
 import shattered.brainsynder.modules.IModule;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ public class CommandHandler extends IModule {
         new CommandBase ().registerCommand(getShattered());
         commands = new ArrayList<>();
         commands.add(new Command_Bows(getShattered()));
+        commands.add(new Command_Reset(getShattered()));
     }
 
     @Override

@@ -5,7 +5,9 @@ import shattered.brainsynder.Shattered;
 import shattered.brainsynder.bows.BowManager;
 import shattered.brainsynder.commands.CommandHandler;
 import shattered.brainsynder.listeners.BowListener;
+import shattered.brainsynder.modules.list.GlassModule;
 import shattered.brainsynder.utils.ItemUtils;
+import shattered.brainsynder.utils.RandomRef;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,10 +17,12 @@ public class ModuleManager {
 
     public ModuleManager(Shattered shattered) {
         moduleList = new ArrayList<>();
+        moduleList.add(new GlassModule(shattered));
         moduleList.add(new BowManager(shattered));
         moduleList.add(new CommandHandler(shattered));
         moduleList.add(new BowListener(shattered));
         moduleList.add(new ItemUtils(shattered));
+        moduleList.add(new RandomRef(shattered));
         load ();
     }
 

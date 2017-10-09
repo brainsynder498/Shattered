@@ -2,9 +2,7 @@ package shattered.brainsynder.bows;
 
 import org.bukkit.inventory.ItemStack;
 import shattered.brainsynder.Shattered;
-import shattered.brainsynder.bows.list.DrunkerBow;
-import shattered.brainsynder.bows.list.ExplosiveBow;
-import shattered.brainsynder.bows.list.RainmakerBow;
+import shattered.brainsynder.bows.list.*;
 import shattered.brainsynder.modules.IModule;
 import shattered.brainsynder.utils.ItemUtils;
 
@@ -35,6 +33,7 @@ public class BowManager extends IModule {
                 if (bow.getClass().isAssignableFrom(DrunkerBow.class)) return new DrunkerBow (getShattered());
                 if (bow.getClass().isAssignableFrom(RainmakerBow.class)) return new RainmakerBow (getShattered());
                 if (bow.getClass().isAssignableFrom(ExplosiveBow.class)) return new ExplosiveBow (getShattered());
+                if (bow.getClass().isAssignableFrom(RegularBow.class)) return new RegularBow (getShattered());
             }
         }
         return null;
@@ -46,6 +45,7 @@ public class BowManager extends IModule {
         bows.add(new DrunkerBow(getShattered()));
         bows.add(new RainmakerBow(getShattered()));
         bows.add(new ExplosiveBow(getShattered()));
+        bows.add(new RegularBow(getShattered()));
     }
 
     @Override
