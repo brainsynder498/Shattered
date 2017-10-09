@@ -15,4 +15,4 @@ As an arrow hits glass/stained glass, it breaks down till regular glass then it 
 
 ## Resources:
 - SimpleAPI (v3.6)
-- Spigot-1.12.1-RO.1
+- craftbukkit-1.12.2-RO.1-SNAPSHOT
