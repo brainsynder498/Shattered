@@ -20,13 +20,13 @@ public class CommandBase extends BaseCommand {
             for (Command gcmd : CommandHandler.commands) {
                 String name = "", description = "", usage = "";
                 if (gcmd.getClass().isAnnotationPresent(CommandName.class)) {
-                    name = gcmd.getClass().getAnnotation(CommandName.class).name();
+                    name = gcmd.getClass().getAnnotation(CommandName.class).value();
                 }
                 if (gcmd.getClass().isAnnotationPresent(CommandUsage.class)) {
-                    description = gcmd.getClass().getAnnotation(CommandUsage.class).usage();
+                    usage = gcmd.getClass().getAnnotation(CommandUsage.class).value();
                 }
                 if (gcmd.getClass().isAnnotationPresent(CommandDescription.class)) {
-                    usage = gcmd.getClass().getAnnotation(CommandDescription.class).description();
+                    description = gcmd.getClass().getAnnotation(CommandDescription.class).value();
                 }
                 if (gcmd.getClass().isAnnotationPresent(Console.class)) {
                     sender.sendMessage("§6-§e shattered " + name + ' ' + usage + " - §7" + description);
@@ -37,7 +37,7 @@ public class CommandBase extends BaseCommand {
             for (Command gcmd : CommandHandler.commands) {
                 String name = "";
                 if (gcmd.getClass().isAnnotationPresent(CommandName.class)) {
-                    name = gcmd.getClass().getAnnotation(CommandName.class).name();
+                    name = gcmd.getClass().getAnnotation(CommandName.class).value();
                 }
                 if (name.equalsIgnoreCase(args[0])) {
                     if (gcmd.getClass().isAnnotationPresent(Console.class)) {
@@ -56,7 +56,7 @@ public class CommandBase extends BaseCommand {
             newArgs.remove(0);
             args = newArgs.toArray(new String[newArgs.size()]);
 
-            base.onConsoleCommand(sender, args);
+            base.onCommand(sender, args);
 
         }
     }
@@ -67,17 +67,17 @@ public class CommandBase extends BaseCommand {
             for (Command gcmd : CommandHandler.commands) {
                 String name = "", description = "", usage = "";
                 if (gcmd.getClass().isAnnotationPresent(CommandName.class)) {
-                    name = gcmd.getClass().getAnnotation(CommandName.class).name();
+                    name = gcmd.getClass().getAnnotation(CommandName.class).value();
                 }
                 if (gcmd.getClass().isAnnotationPresent(CommandUsage.class)) {
-                    description = ' ' + gcmd.getClass().getAnnotation(CommandUsage.class).usage();
+                    usage = ' ' + gcmd.getClass().getAnnotation(CommandUsage.class).value();
                 }
                 if (gcmd.getClass().isAnnotationPresent(CommandDescription.class)) {
-                    usage = " - " + gcmd.getClass().getAnnotation(CommandDescription.class).description();
+                    description = " - " + gcmd.getClass().getAnnotation(CommandDescription.class).value();
                 }
                 if (!gcmd.getClass().isAnnotationPresent(Console.class)) {
                     if (gcmd.getClass().isAnnotationPresent(CommandPermission.class)) {
-                        if (!p.hasPermission("Pet." + gcmd.getClass().getAnnotation(CommandPermission.class).permission()))
+                        if (!p.hasPermission("Shattered.command." + gcmd.getClass().getAnnotation(CommandPermission.class).value()))
                             continue;
                     }
                     p.sendMessage("§b/shattered " + name + ChatColor.GRAY + usage + description);
@@ -88,7 +88,7 @@ public class CommandBase extends BaseCommand {
             for (Command gcmd : CommandHandler.commands) {
                 String name = "";
                 if (gcmd.getClass().isAnnotationPresent(CommandName.class)) {
-                    name = gcmd.getClass().getAnnotation(CommandName.class).name();
+                    name = gcmd.getClass().getAnnotation(CommandName.class).value();
                 }
                 if (name.equalsIgnoreCase(args[0])) {
                     if (!gcmd.getClass().isAnnotationPresent(Console.class)) {
@@ -103,7 +103,7 @@ public class CommandBase extends BaseCommand {
             }
 
             if ((base.getClass().isAnnotationPresent(CommandPermission.class)) &&
-                    (!p.hasPermission("Pet." + base.getClass().getAnnotation(CommandPermission.class).permission()))) {
+                    (!p.hasPermission("Shattered.command." + base.getClass().getAnnotation(CommandPermission.class).value()))) {
                 //p.sendMessage(PetCore.get().getMessages().getString("No-Permission", true));
                 return;
             }
@@ -113,7 +113,7 @@ public class CommandBase extends BaseCommand {
             newArgs.remove(0);
             args = newArgs.toArray(new String[newArgs.size()]);
 
-            base.onPlayerCommand(p, args);
+            base.onCommand(p, args);
 
         }
     }

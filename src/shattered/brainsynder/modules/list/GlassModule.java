@@ -3,14 +3,17 @@ package shattered.brainsynder.modules.list;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import shattered.brainsynder.Shattered;
+import shattered.brainsynder.arena.Arena;
 import shattered.brainsynder.modules.IModule;
 import shattered.brainsynder.utils.BlockStorage;
+import simple.brainsynder.api.ParticleMaker;
+import simple.brainsynder.sound.SoundMaker;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class GlassModule extends IModule {
-    private BlockStorage blockSave = null;
+    private Map<String, BlockStorage> blockMap = null;
     private Map<Integer, Integer> order = null;
 
     public GlassModule(Shattered shattered) {
@@ -25,16 +28,34 @@ public class GlassModule extends IModule {
         order.put(7, 8);
         order.put(8, 0);
         order.put(0, -1);
-        blockSave = new BlockStorage();
+        blockMap = new HashMap<>();
     }
-    
-    public void onArrowLand (Block block) {
+
+    @Override
+    public void unLoad() {
+        if (!blockMap.isEmpty()) {
+            blockMap.values().forEach(BlockStorage::reset);
+        }
+        blockMap.clear();
+        blockMap = null;
+        order.clear();
+        order = null;
+    }
+
+    public void onArrowLand (Arena arena, Block block) {
         if (block == null) return;
         if ((block.getType() != Material.STAINED_GLASS)
                 && (block.getType() != Material.STAINED_GLASS_PANE)
                 && (block.getType() != Material.GLASS)
                 && (block.getType() != Material.THIN_GLASS)) return;
+        BlockStorage blockSave = blockMap.getOrDefault(arena.getId(), new BlockStorage());
         if (!blockSave.contains(block)) blockSave.addBlock(block);
+        blockMap.put(arena.getId(), blockSave);
+        SoundMaker.BLOCK_GLASS_BREAK.playSound(block.getLocation());
+        ParticleMaker maker = new ParticleMaker(ParticleMaker.Particle.BLOCK_DUST, 20, 0.75);
+        maker.setData(block.getType(), block.getData());
+        maker.sendToLocation(block.getLocation());
+        
         if ((block.getType() == Material.GLASS)
                 || (block.getType() == Material.THIN_GLASS)) {
             block.setType(Material.AIR);
@@ -53,10 +74,9 @@ public class GlassModule extends IModule {
         }else{
             block.setData((byte) var);
         }
-        
     }
 
-    public BlockStorage getBlockSave() {
-        return blockSave;
+    public BlockStorage getBlockSave(Arena arena) {
+        return blockMap.putIfAbsent(arena.getId(), new BlockStorage());
     }
 }

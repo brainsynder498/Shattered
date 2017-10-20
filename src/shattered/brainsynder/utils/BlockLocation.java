@@ -54,6 +54,13 @@ public class BlockLocation {
                 && (location.z == z)
         );
     }
+    
+    public BlockLocation add (int x, int y, int z){
+        this.x += x;
+        this.y += y;
+        this.z += z;
+        return this;
+    }
 
     public World getWorld() {
         return this.world;
@@ -85,5 +92,9 @@ public class BlockLocation {
 
     public void setZ(int z) {
         this.z = z;
+    }
+    
+    public BlockLocation copy () {
+        return new BlockLocation(world, x, y, z);
     }
 }

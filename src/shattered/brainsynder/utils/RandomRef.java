@@ -1,15 +1,22 @@
 package shattered.brainsynder.utils;
 
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 import org.bukkit.util.Vector;
 import shattered.brainsynder.Shattered;
 import shattered.brainsynder.modules.IModule;
+import shattered.brainsynder.utils.raytrace.AABB;
+import shattered.brainsynder.utils.raytrace.Ray;
 import simple.brainsynder.reflection.FieldAccessor;
 import simple.brainsynder.utils.Reflection;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class RandomRef extends IModule{
     public RandomRef(Shattered shattered) {
@@ -49,13 +56,30 @@ public class RandomRef extends IModule{
     public Location getTargetLocation(Entity player) {
         return player.getLocation().clone().add(player.getLocation().getDirection().multiply(100.0));
     }
+    
+    public static Player getTargetPlayer(Player player, int max) {
+        List<Player> possible = player.getNearbyEntities(max, max, max).stream().filter(entity -> entity instanceof Player).map(entity -> (Player) entity).filter(player::hasLineOfSight).collect(Collectors.toList());
+        Ray ray = Ray.from(player);
+        double d = -1;
+        Player closest = null;
+        for (Player player1 : possible) {
+            double dis = AABB.from(player1).collidesD(ray, 0, max);
+            if (dis != -1) {
+                if (dis < d || d == -1) {
+                    d = dis;
+                    closest = player1;
+                }
+            }
+        }
+        return closest;
+    }
 
     public Vector calculatePath(Player player) {
         double yaw = Math.toRadians((double) (-player.getLocation().getYaw() - 90.0F));
         double pitch = Math.toRadians((double) (-player.getLocation().getPitch()));
-        double x = Math.cos(pitch) * Math.cos(yaw) + (0.0D);
-        double y = Math.sin(pitch) + (0.0D);
-        double z = -Math.sin(yaw) * Math.cos(pitch) + (0.0D);
+        double x = Math.cos(pitch) * Math.cos(yaw);
+        double y = Math.sin(pitch);
+        double z = -Math.sin(yaw) * Math.cos(pitch);
         return new Vector(x, y, z);
     }
 

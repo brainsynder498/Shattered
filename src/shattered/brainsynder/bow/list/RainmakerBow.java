@@ -1,4 +1,4 @@
-package shattered.brainsynder.bows.list;
+package shattered.brainsynder.bow.list;
 
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -7,13 +7,14 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
 import shattered.brainsynder.Shattered;
-import shattered.brainsynder.bows.Bow;
+import shattered.brainsynder.bow.Bow;
+import shattered.brainsynder.bow.Special;
 import shattered.brainsynder.listeners.BowListener;
 import simple.brainsynder.api.ItemMaker;
 import simple.brainsynder.math.MathUtils;
 
-public class RainmakerBow extends Bow {
-    private boolean fired = false;
+public class RainmakerBow extends Bow implements Special {
+    private int fires = 0;
     private BowListener listener = null;
     
     public RainmakerBow(Shattered shattered) {
@@ -33,7 +34,7 @@ public class RainmakerBow extends Bow {
 
     @Override
     public void whileInAir(Arrow arrow) {
-        if (!fired) {
+        if (fires == 2) {
             if (listener == null) listener = getShattered().getModuleManager().getModule("BowListener");
             for (int i = 0; i < 3; i++) {
                 float random = MathUtils.random(1f, 20f);
@@ -45,7 +46,9 @@ public class RainmakerBow extends Bow {
                 newArrow.setShooter(arrow.getShooter());
                 listener.bowCache.inject(newArrow.getUniqueId().toString(), null);
             }
+            fires = 0;
+        }else{
+            fires++;
         }
-        fired = !fired;
     }
 }

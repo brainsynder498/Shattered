@@ -9,10 +9,13 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class BlockUtils {
-    public static Map<Location, String> blocksToRestore = new HashMap<>();
+    private static Map<Location, String> blocksToRestore = new HashMap<>();
     private static List<Material> blockedblocks = new ArrayList<>();
 
     public static List<Block> getBlocksInRadius(Location location, int radius, boolean hollow) {
@@ -67,11 +70,11 @@ public class BlockUtils {
         double cy = loc.getY();
         double cz = loc.getZ();
 
-        for (double x = cx - r.doubleValue(); x <= cx + r.doubleValue(); ++x) {
-            for (double z = cz - r.doubleValue(); z <= cz + r.doubleValue(); ++z) {
-                for (double y = sphere.booleanValue() ? cy - r.doubleValue() : cy; y < (sphere.booleanValue() ? cy + r.doubleValue() : cy + h.doubleValue()); ++y) {
-                    double dist = (cx - x) * (cx - x) + (cz - z) * (cz - z) + (sphere.booleanValue() ? (cy - y) * (cy - y) : 0.0D);
-                    if (dist < r.doubleValue() * r.doubleValue() && (!hollow.booleanValue() || dist >= (r.doubleValue() - 1.0D) * (r.doubleValue() - 1.0D))) {
+        for (double x = cx - r; x <= cx + r; ++x) {
+            for (double z = cz - r; z <= cz + r; ++z) {
+                for (double y = sphere ? cy - r : cy; y < (sphere ? cy + r : cy + h); ++y) {
+                    double dist = (cx - x) * (cx - x) + (cz - z) * (cz - z) + (sphere ? (cy - y) * (cy - y) : 0.0D);
+                    if (dist < r * r && (!hollow || dist >= (r - 1.0D) * (r - 1.0D))) {
                         Location l = new Location(loc.getWorld(), x, y + (double) plus_y, z);
                         circleblocks.add(l);
                     }
@@ -81,8 +84,7 @@ public class BlockUtils {
 
         return circleblocks;
     }
-
-
+    
     public static boolean isOnGround(Entity entity) {
         Block block = entity.getLocation().getBlock().getRelative(BlockFace.DOWN);
         return block.getType().isSolid() || block.isLiquid();
@@ -95,25 +97,23 @@ public class BlockUtils {
     }
 
     public static void forceRestore() {
-        Iterator i$ = blocksToRestore.keySet().iterator();
-
-        while (i$.hasNext()) {
-            Location loc = (Location) i$.next();
+    
+        for (Location loc : blocksToRestore.keySet()) {
             Block b = loc.getBlock();
             String s = blocksToRestore.get(loc);
             Material m = Material.valueOf(s.split(",")[0]);
-            byte d = Byte.valueOf(s.split(",")[1]).byteValue();
+            byte d = Byte.valueOf(s.split(",")[1]);
             b.setType(m);
             b.setData(d);
         }
     }
 
-    public static void restoreBlockAt(Plugin plugin, Location loc) {
+    private static void restoreBlockAt(Plugin plugin, Location loc) {
         if (blocksToRestore.containsKey(loc)) {
             Block b = loc.getBlock();
             String s = blocksToRestore.get(loc);
             Material m = Material.valueOf(s.split(",")[0]);
-            byte d = Byte.valueOf(s.split(",")[1]).byteValue();
+            byte d = Byte.valueOf(s.split(",")[1]);
             b.setType(m);
             b.setData(d);
             b.removeMetadata("NoBlockBreak", plugin);
@@ -138,7 +138,7 @@ public class BlockUtils {
         }
     }
 
-    public static boolean isNotBreakableOnChange(Block b) {
+    private static boolean isNotBreakableOnChange(Block b) {
         if ((b.getType() == Material.YELLOW_FLOWER
                 || b.getType() == Material.RED_ROSE
                 || b.getType() == Material.DOUBLE_PLANT
@@ -216,7 +216,7 @@ public class BlockUtils {
         return true;
     }
 
-    public static boolean canChange(Block b) {
+    private static boolean canChange(Block b) {
         if (!blocksToRestore.containsKey(b.getLocation())) {
             if (blockedblocks.isEmpty()) {
                 blockedblocks.add(Material.CHEST);

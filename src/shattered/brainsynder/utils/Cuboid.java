@@ -2,7 +2,8 @@ package shattered.brainsynder.utils;
 
 import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.json.simple.JSONObject;
+import simple.brainsynder.math.MathUtils;
+import simple.brainsynder.nbt.StorageTagCompound;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -11,7 +12,7 @@ import java.util.List;
 /**
  * This was planned to be used for the TntRun and Spleef Events... but I never got around to adding it XD
  */
-public class Cuboid implements Iterable<Block>, Cloneable {
+public class Cuboid implements Cloneable {
     protected final String worldName;
     protected final int x1, y1, z1;
     protected final int x2, y2, z2;
@@ -77,9 +78,9 @@ public class Cuboid implements Iterable<Block>, Cloneable {
     }
 
     /**
-     * Construct a Cuboid in the given world name and xyz co-ordinates.
+     * Construct a Cuboid in the given world value and xyz co-ordinates.
      *
-     * @param worldName - The Cuboid's world name
+     * @param worldName - The Cuboid's world value
      * @param x1        - X co-ordinate of corner 1
      * @param y1        - Y co-ordinate of corner 1
      * @param z1        - Z co-ordinate of corner 1
@@ -102,28 +103,27 @@ public class Cuboid implements Iterable<Block>, Cloneable {
      * Construct a Cuboid using a map with the following keys: worldName, x1,
      * x2, y1, y2, z1, z2
      *
-     * @param map - The map of keys.
      */
-    public Cuboid(JSONObject map) {
-        this.worldName = (String) map.get("worldName");
-        this.x1 = (Integer) map.get("x1");
-        this.x2 = (Integer) map.get("x2");
-        this.y1 = (Integer) map.get("y1");
-        this.y2 = (Integer) map.get("y2");
-        this.z1 = (Integer) map.get("z1");
-        this.z2 = (Integer) map.get("z2");
+    public Cuboid(StorageTagCompound compound) {
+        this.worldName = compound.getString("worldName");
+        this.x1 = compound.getInteger("x1");
+        this.x2 = compound.getInteger("x2");
+        this.y1 = compound.getInteger("y1");
+        this.y2 = compound.getInteger("y2");
+        this.z1 = compound.getInteger("z1");
+        this.z2 = compound.getInteger("z2");
     }
 
-    public JSONObject serialize() {
-        JSONObject map = new JSONObject();
-        map.put("worldName", this.worldName);
-        map.put("x1", this.x1);
-        map.put("y1", this.y1);
-        map.put("z1", this.z1);
-        map.put("x2", this.x2);
-        map.put("y2", this.y2);
-        map.put("z2", this.z2);
-        return map;
+    public StorageTagCompound serialize() {
+        StorageTagCompound compound = new StorageTagCompound();
+        compound.setString("worldName", this.worldName);
+        compound.setInteger("x1", this.x1);
+        compound.setInteger("y1", this.y1);
+        compound.setInteger("z1", this.z1);
+        compound.setInteger("x2", this.x2);
+        compound.setInteger("y2", this.y2);
+        compound.setInteger("z2", this.z2);
+        return compound;
     }
 
     /**
@@ -432,7 +432,7 @@ public class Cuboid implements Iterable<Block>, Cloneable {
     public byte getAverageLightLevel() {
         long total = 0;
         int n = 0;
-        for (Block b : this) {
+        for (Block b : getBlocks()) {
             if (b.isEmpty()) {
                 total += b.getLightLevel();
                 ++n;
@@ -558,7 +558,7 @@ public class Cuboid implements Iterable<Block>, Cloneable {
      */
     @SuppressWarnings("deprecation")
     public boolean containsOnly(int blockId) {
-        for (Block b : this) {
+        for (Block b : getBlocks()) {
             if (b.getTypeId() != blockId)
                 return false;
         }
@@ -585,6 +585,14 @@ public class Cuboid implements Iterable<Block>, Cloneable {
 
         return new Cuboid(this.worldName, xMin, yMin, zMin, xMax, yMax,
                 zMax);
+    }
+
+    public BlockLocation getRandomLocation () {
+        int x = MathUtils.random(x1, x2);
+        int y = MathUtils.random(y1, y2);
+        int z = MathUtils.random(z1, z2);
+        if (contains(x, y, z)) return new BlockLocation(getWorld(), x, y, z);
+        return null;
     }
 
     /**
@@ -637,7 +645,7 @@ public class Cuboid implements Iterable<Block>, Cloneable {
         return res;
     }
 
-    public Iterator<Block> iterator() {
+    public CuboidIterator iterator() {
         return new CuboidIterator(this.getWorld(), this.x1, this.y1,
                 this.z1, this.x2, this.y2, this.z2);
     }
@@ -740,5 +748,4 @@ public class Cuboid implements Iterable<Block>, Cloneable {
         public void remove() {
         }
     }
-
 }

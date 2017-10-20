@@ -2,10 +2,12 @@ package shattered.brainsynder.modules;
 
 import org.bukkit.Bukkit;
 import shattered.brainsynder.Shattered;
-import shattered.brainsynder.bows.BowManager;
+import shattered.brainsynder.arena.ArenaManager;
+import shattered.brainsynder.bow.BowManager;
 import shattered.brainsynder.commands.CommandHandler;
 import shattered.brainsynder.listeners.BowListener;
 import shattered.brainsynder.modules.list.GlassModule;
+import shattered.brainsynder.player.PlayerManager;
 import shattered.brainsynder.utils.ItemUtils;
 import shattered.brainsynder.utils.RandomRef;
 
@@ -23,10 +25,12 @@ public class ModuleManager {
         moduleList.add(new BowListener(shattered));
         moduleList.add(new ItemUtils(shattered));
         moduleList.add(new RandomRef(shattered));
-        load ();
+        moduleList.add(new ArenaManager(shattered));
+        moduleList.add(new PlayerManager(shattered));
+        load();
     }
 
-    private void load () {
+    private void load() {
         Bukkit.getLogger().info("Preparing to loading Modules:");
         moduleList.forEach(module -> {
             module.onLoad();

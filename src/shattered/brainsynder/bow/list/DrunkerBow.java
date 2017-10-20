@@ -1,6 +1,9 @@
-package shattered.brainsynder.bows.list;
+package shattered.brainsynder.bow.list;
 
-import org.bukkit.*;
+import org.bukkit.Color;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -8,14 +11,15 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import shattered.brainsynder.Shattered;
-import shattered.brainsynder.bows.Bow;
+import shattered.brainsynder.bow.Bow;
+import shattered.brainsynder.bow.Special;
 import simple.brainsynder.api.ItemMaker;
 import simple.brainsynder.api.ParticleMaker;
 import simple.brainsynder.sound.SoundMaker;
 
 import java.util.Collection;
 
-public class DrunkerBow extends Bow {
+public class DrunkerBow extends Bow implements Special {
     public DrunkerBow(Shattered shattered) {
         super(shattered, "Drunker");
     }
@@ -50,7 +54,7 @@ public class DrunkerBow extends Bow {
                 if (player.getGameMode() == GameMode.SPECTATOR) return;
                 if (player.hasPotionEffect(PotionEffectType.CONFUSION)) return;
                 SoundMaker.ENTITY_GENERIC_SPLASH.playSound(location, 1.0f, 1.0f);
-                player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 120, 2));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 20*20, 5));
             }
         });
     }

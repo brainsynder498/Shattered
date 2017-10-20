@@ -1,10 +1,10 @@
-package shattered.brainsynder.bows.list;
+package shattered.brainsynder.bow.list;
 
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import shattered.brainsynder.Shattered;
-import shattered.brainsynder.bows.Bow;
+import shattered.brainsynder.bow.Bow;
 import simple.brainsynder.api.ItemMaker;
 
 public class RegularBow extends Bow {
